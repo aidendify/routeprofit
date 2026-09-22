@@ -1,0 +1,175 @@
+{% extends "base.html" %}
+{% block title %}Dashboard — RouteProfit{% endblock %}
+{% block content %}
+<section class="card">
+  <div class="page-head">
+    <h1>{{ business_name }}</h1>
+    <p class="lede">Upload completed-job and mileage CSVs, then run the leakage report.</p>
+  </div>
+  <dl class="facts">
+    <div>
+      <dt>Jobs loaded</dt>
+      <dd>{{ stats.jobs_count }}</dd>
+    </div>
+    <div>
+      <dt>Mileage rows</dt>
+      <dd>{{ stats.mileage_count }}</dd>
+    </div>
+    <div>
+      <dt>Rates</dt>
+      <dd>${{ '%.2f'|format(rates.hourly) }}/hr · ${{ '%.2f'|format(rates.cpm) }}/mi · {{ rates.gap }} min gap</dd>
+    </div>
+  </dl>
+  <div class="btn-row">
+    <a class="btn btn-quiet" href="{{ url_for('upload_jobs') }}">Upload jobs</a>
+    <a class="btn btn-quiet" href="{{ url_for('upload_mileage') }}">Upload mileage</a>
+    <form class="inline-form" method="post" action="{{ url_for('report_run') }}">
+      <button class="btn" type="submit">Run report</button>
+    </form>
+    {% if report %}
+    <a class="btn btn-quiet" href="{{ url_for('report_csv') }}">Export /report.csv</a>
+    {% if smtp_configured and owner_email_set %}
+    <form class="inline-form" method="post" action="{{ url_for('report_email') }}">
+      <button class="btn btn-quiet" type="submit">Email weekly summary</button>
+    </form>
+    {% endif %}
+    {% endif %}
+  </div>
+  {% if stats.last_jobs %}
+  <p class="hint">Last jobs file: {{ stats.last_jobs.filename }} ({{ stats.last_jobs.row_count }} rows)</p>
+  {% endif %}
+  {% if stats.last_mileage %}
+  <p class="hint">Last mileage file: {{ stats.last_mileage.filename }} ({{ stats.last_mileage.row_count }} rows)</p>
+  {% endif %}
+</section>
+
+{% if report %}
+<section class="card">
+  <div class="page-head">
+    <h2>Leakage summary</h2>
+    <p class="lede">Computed {{ report.created_at }}</p>
+  </div>
+  <div class="cards-grid">
+    <div class="stat-card">
+      <div class="stat-label">Deadhead $</div>
+      <div class="stat-value">{{ format_money(report.totals.deadhead_dollars) }}</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Schedule-gap $</div>
+      <div class="stat-value">{{ format_money(report.totals.gap_dollars) }}</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Billable-hour leak $</div>
+      <div class="stat-value">{{ format_money(report.totals.hour_leak_dollars) }}</div>
+    </div>
+    <div class="stat-card stat-total">
+      <div class="stat-label">Total leak $</div>
+      <div class="stat-value">{{ format_money(report.totals.total_dollars) }}</div>
+    </div>
+  </div>
+  {% if report.notes %}
+  <ul class="hint">
+    {% for n in report.notes %}
+    <li>{{ n }}</li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+  <div class="btn-row">
+    <button class="btn btn-quiet" type="button" onclick='copyText({{ blurb|tojson }}, this)'>Copy summary</button>
+  </div>
+</section>
+
+<section class="card">
+  <h2>By tech</h2>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Tech</th>
+          <th>Deadhead $</th>
+          <th>Gap $</th>
+          <th>Hour leak $</th>
+          <th>Total $</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for tech, vals in report.by_tech.items() %}
+        <tr>
+          <td>{{ tech }}</td>
+          <td>{{ format_money(vals.deadhead) }}</td>
+          <td>{{ format_money(vals.gap) }}</td>
+          <td>{{ format_money(vals.hours) }}</td>
+          <td>{{ format_money(vals.total) }}</td>
+        </tr>
+        {% else %}
+        <tr><td colspan="5" class="empty">No rows</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="card">
+  <h2>By day</h2>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Deadhead $</th>
+          <th>Gap $</th>
+          <th>Hour leak $</th>
+          <th>Total $</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for day, vals in report.by_day.items() %}
+        <tr>
+          <td>{{ day }}</td>
+          <td>{{ format_money(vals.deadhead) }}</td>
+          <td>{{ format_money(vals.gap) }}</td>
+          <td>{{ format_money(vals.hours) }}</td>
+        </tr>
+        {% else %}
+        <tr><td colspan="5" class="empty">No rows</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="card">
+  <h2>By area</h2>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Area</th>
+          <th>Deadhead $</th>
+          <th>Gap $</th>
+          <th>Hour leak $</th>
+          <th>Total $</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for area, vals in report.by_area.items() %}
+        <tr>
+          <td>{{ area }}</td>
+          <td>{{ format_money(vals.deadhead) }}</td>
+          <td>{{ format_money(vals.gap) }}</td>
+          <td>{{ format_money(vals.hours) }}</td>
+          <td>{{ format_money(vals.total) }}</td>
+        </tr>
+        {% else %}
+        <tr><td colspan="5" class="empty">No rows</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+{% else %}
+<section class="card">
+  <p class="empty">No report yet. Upload sample CSVs and hit <strong>Run report</strong>.</p>
+</section>
+{% endif %}
+{% endblock %}
