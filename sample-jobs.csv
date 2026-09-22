@@ -1,0 +1,10 @@
+tech,job_ref,customer,area,start_at,end_at,billable_hours,invoiced_hours
+Alex Rivera,J-101,Nguyen Residence,02134,2026-09-15 08:00,2026-09-15 09:30,1.5,1.5
+Alex Rivera,J-102,Park Condos,02134,2026-09-15 10:30,2026-09-15 12:00,1.5,1.5
+Alex Rivera,J-103,Lee HVAC Call,02139,2026-09-15 13:00,2026-09-15 15:00,2.0,1.5
+Alex Rivera,J-201,Chen Repair,02134,2026-09-16 08:00,2026-09-16 09:00,1.0,1.0
+Alex Rivera,J-202,Ortiz Boiler,02139,2026-09-16 10:00,2026-09-16 11:30,1.5,1.0
+Blake Torres,J-111,Smith Plumbing,02138,2026-09-15 09:00,2026-09-15 10:00,1.0,1.0
+Blake Torres,J-112,Davis Leak,02138,2026-09-15 11:00,2026-09-15 12:30,1.5,1.5
+Blake Torres,J-211,Kim AC,02140,2026-09-16 08:30,2026-09-16 10:00,1.5,1.25
+Blake Torres,J-212,Patel Service,02140,2026-09-16 11:00,2026-09-16 12:00,1.0,1.0
