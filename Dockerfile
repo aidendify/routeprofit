@@ -13,6 +13,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY app.py .
 COPY helpers.py .
 COPY leakage.py .
+COPY csv_io.py .
 COPY sample-jobs.csv .
 COPY sample-mileage.csv .
 COPY templates/ templates/
