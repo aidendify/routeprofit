@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}Settings — RouteProfit{% endblock %}
+{% block content %}
+<section class="card">
+  <div class="page-head">
+    <h1>Settings</h1>
+    <p class="lede">Rates and gap threshold (stored in DB; override env defaults).</p>
+  </div>
+  <form method="post" class="stack">
+    <label>Hourly rate (USD)
+      <input type="number" name="hourly_rate" step="0.01" min="0" value="{{ hourly }}" required>
+    </label>
+    <label>Deadhead cost per mile (USD)
+      <input type="number" name="deadhead_cpm" step="0.01" min="0" value="{{ cpm }}" required>
+    </label>
+    <label>Gap threshold (minutes)
+      <input type="number" name="gap_threshold" step="1" min="1" value="{{ gap }}" required>
+    </label>
+    <button class="btn" type="submit">Save</button>
+  </form>
+</section>
+{% endblock %}

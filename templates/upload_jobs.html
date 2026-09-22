@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}Upload jobs — RouteProfit{% endblock %}
+{% block content %}
+<section class="card">
+  <div class="page-head">
+    <h1>Upload Jobs CSV</h1>
+    <p class="lede">Header row required. Column names are case-insensitive.</p>
+  </div>
+  <p class="hint">Required: <code>tech</code> / <code>technician</code> / <code>employee</code>, <code>start_at</code> / <code>started</code>, <code>end_at</code> / <code>ended</code> / <code>completed_at</code>.</p>
+  <p class="hint">Optional: <code>job_ref</code>, <code>customer</code>, <code>area</code>/<code>zip</code>/<code>city</code>, <code>billable_hours</code>, <code>invoiced_hours</code>, <code>nonbillable_hours</code>.</p>
+  <form method="post" enctype="multipart/form-data" class="stack">
+    <label>CSV file
+      <input type="file" name="file" accept=".csv,text/csv" required>
+    </label>
+    <button class="btn" type="submit">Upload jobs</button>
+  </form>
+</section>
+{% endblock %}

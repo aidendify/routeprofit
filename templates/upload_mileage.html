@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}Upload mileage — RouteProfit{% endblock %}
+{% block content %}
+<section class="card">
+  <div class="page-head">
+    <h1>Upload Mileage CSV</h1>
+    <p class="lede">Header row required. Column names are case-insensitive.</p>
+  </div>
+  <p class="hint">Required: <code>tech</code>, <code>date</code>, and <code>miles</code>/<code>distance</code> (or <code>deadhead_miles</code>).</p>
+  <p class="hint">Optional: <code>kind</code> (<code>deadhead</code>|<code>job</code>|<code>total</code>), <code>is_deadhead</code>, <code>job_miles</code> + <code>deadhead_miles</code>.</p>
+  <form method="post" enctype="multipart/form-data" class="stack">
+    <label>CSV file
+      <input type="file" name="file" accept=".csv,text/csv" required>
+    </label>
+    <button class="btn" type="submit">Upload mileage</button>
+  </form>
+</section>
+{% endblock %}
